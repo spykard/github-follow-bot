@@ -47,13 +47,10 @@ class Bot():
         ]
         i = 1
         random.shuffle(projects)
-        yield self._client.get_user("clivern")
         for project in projects:
             repo = self._client.get_repo(project)
             for username in repo.get_stargazers():
-                if self._is_user_followed(username):
-                    continue
-                if count <= i:
+                if count < i:
                     break
                 i += 1
                 yield username

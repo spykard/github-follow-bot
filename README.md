@@ -9,10 +9,21 @@
 
 ``` ini
 [Settings]
-access_token = x
-username = xxx
-password = xxx
-verbose = 1
+[DEFAULT]
+access_token =
+operation = follow
+followers_count = 1000
+interval = 2
+verbosity = DEBUG
+whitelist = 
+
+[Settings]
+access_token =
+operation = follow
+followers_count = 100
+interval = 4
+verbosity = INFO
+whitelist = jacquev6 sfdye
 ```
 
 `access_token` : A GitHub access token, created at https://github.com/settings/tokens/new with required user permissions (read:user, user:email, user:follow).
