@@ -1,4 +1,5 @@
 import random
+from datetime import datetime, timedelta
 from github import Github
 
 
@@ -14,7 +15,7 @@ class Bot():
         """
         self._client = Github(access_token)
 
-    def get_random_users(self, count=1000, min_followers=10, min_follow=10):
+    def get_random_users(self, count=1000, projects="python/cpython", min_followers=5, min_follow=5, blacklist={}):
         """
         Get Random Users
 
@@ -26,30 +27,20 @@ class Bot():
         Returns:
             a list of users
         """
-        projects = [
-            "python/cpython",
-            "php/php-src",
-            "ruby/ruby",
-            "golang/go",
-            "openjdk/jdk",
-            "JetBrains/kotlin",
-            "nodejs/node",
-            "rust-lang/rust",
-            "elixir-lang/elixir",
-            "django/django",
-            "laravel/laravel",
-            "spring-projects/spring-boot",
-            "spring-projects/spring-framework",
-            "gin-gonic/gin",
-            "labstack/echo",
-            "rails/rails",
-            "nodejs/node",
-        ]
         i = 1
         random.shuffle(projects)
         for project in projects:
             repo = self._client.get_repo(project)
             for username in repo.get_stargazers():
+                date = datetime.now() - timedelta(weeks=12)
+                if username.login in blacklist:
+                    continue
+                if username.updated_at < date:
+                    continue  
+                if username.followers < min_followers:
+                    continue              
+                if username.following < min_follow:
+                    continue
                 if count < i:
                     break
                 i += 1

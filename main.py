@@ -1,8 +1,9 @@
-import argparse
 import logging
 import sys
 import time
+import csv
 import configparser
+from datetime import datetime
 
 from bot import Bot
 
@@ -10,16 +11,23 @@ from bot import Bot
 _logger = logging.getLogger(__name__)
 
 
-def follow(access_token, followers_count, interval):
+def follow(access_token, followers_count, projects, interval, blacklist):
     bot = Bot(access_token)
 
     following = []
     for username in bot.get_following():
         following.append(username)
 
-    for username in bot.get_random_users(followers_count):
+    if blacklist:
+        blacklist_set = get_blacklist(blacklist)
+    else:
+        blacklist_set = {}
+
+    for username in bot.get_random_users(followers_count, projects.split(), 5, 5, blacklist_set):
         if username not in following:       
             _logger.info("follow {}".format(username))
+            if blacklist:
+                log_follows(blacklist, username.login, datetime.utcnow())
             bot.follow_username(username)
         else:
             _logger.info("{} is already followed by the user".format(username))            
@@ -29,7 +37,7 @@ def follow(access_token, followers_count, interval):
 def clean(access_token, whitelist, interval):
     bot = Bot(access_token)
 
-    whitelist_arr = [bot.client.get_user(x) for x in whitelist.split()]
+    whitelist_arr = [bot.client.get_user(x) for x in whitelist.split()] # Could use less API Calls if implemented in the same way as the Blacklist
 
     followrs = whitelist_arr
     for username in bot.get_followers():
@@ -50,6 +58,27 @@ def get_ratelimit(access_token):
     bot = Bot(access_token)
 
     return(bot.get_ratelimit())
+
+
+def get_blacklist(blacklist):
+    """Get a list of usernames from a file to be used as a Blacklist to avoid re-following the same accounts in the future.
+    """    
+    rows = []
+    with open(blacklist, 'r', encoding='UTF8') as f:
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            rows.append(row[0])
+
+    return(set(rows))
+
+
+def log_follows(blacklist, username, followed_at):
+    """Write usernames that were followed to a file.
+    """    
+    with open(blacklist, 'a', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([username, followed_at])
 
 
 def parse_config():
@@ -82,16 +111,14 @@ def main():
     _logger.info("Remaining API calls {} out of {}".format(str(ratelimit[0]), str(ratelimit[1])))
 
     if config['operation'] == "follow":
-        while True:
-            follow(config['access_token'], int(config['followers_count']), int(config['interval']))
-            break            
-            # try:
-            #     follow(config['access_token'], int(config['followers_count']), int(config['interval']))
-            #     break
-            # except Exception as e:
-            #     _logger.info(e)
-            #     _logger.info("Rate limit reached, hold on for a while")
-            #     time.sleep(int(config['interval']) + 60)
+        while True:          
+            try:
+                follow(config['access_token'], int(config['followers_count']), config['projects'], int(config['interval']), config['blacklist'])
+                break
+            except Exception as e:
+                _logger.info(e)
+                _logger.info("Rate limit reached, hold on for a while")
+                time.sleep(int(config['interval']) + 60)
 
     elif config['operation'] == "clean":
         while True:
