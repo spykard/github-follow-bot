@@ -32,7 +32,7 @@ class Bot():
         for project in projects:
             repo = self._client.get_repo(project)
             for username in repo.get_stargazers():
-                date = datetime.now() - timedelta(weeks=12)
+                date = datetime.now() - timedelta(weeks=7)
                 if username.login in blacklist:
                     continue
                 if username.updated_at < date:
