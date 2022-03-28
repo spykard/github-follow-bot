@@ -8,7 +8,6 @@
 2. Set the appropriate configuration parameters, in the file `/config/config.ini`, using the following format:
 
 ``` ini
-[Settings]
 [DEFAULT]
 access_token =
 operation = follow
