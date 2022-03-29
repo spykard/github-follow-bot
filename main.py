@@ -11,7 +11,7 @@ from bot import Bot
 _logger = logging.getLogger(__name__)
 
 
-def follow(access_token, followers_count, projects, interval, blacklist):
+def follow(access_token, followers_count, projects, interval, blacklist, active_since):
     bot = Bot(access_token)
 
     following = []
@@ -23,7 +23,7 @@ def follow(access_token, followers_count, projects, interval, blacklist):
     else:
         blacklist_set = {}
 
-    for username in bot.get_random_users(followers_count, projects.split(), 5, 5, blacklist_set):
+    for username in bot.get_random_users(followers_count, projects.split(), 5, 5, blacklist_set, active_since):
         if username not in following:       
             _logger.info("follow {}".format(username))
             if blacklist:
@@ -113,7 +113,7 @@ def main():
     if config['operation'] == "follow":
         while True:          
             try:
-                follow(config['access_token'], int(config['followers_count']), config['projects'], int(config['interval']), config['blacklist'])
+                follow(config['access_token'], int(config['followers_count']), config['projects'], int(config['interval']), config['blacklist'], int(config['active_since']))
                 break
             except Exception as e:
                 _logger.info(e)

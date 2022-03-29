@@ -13,6 +13,7 @@ access_token =
 operation = follow
 followers_count = 1000
 interval = 2
+active_since = 8
 verbosity = DEBUG
 projects = python/cpython php/php-src ruby/ruby golang/go openjdk/jdk JetBrains/kotlin nodejs/node rust-lang/rust elixir-lang/elixir django/django laravel/laravel spring-projects/spring-boot spring-projects/spring-framework gin-gonic/gin labstack/echo rails/rails nodejs/node
 blacklist =
@@ -23,6 +24,7 @@ access_token =
 operation = follow
 followers_count = 100
 interval = 4
+active_since = 3
 verbosity = INFO
 projects = python/cpython php/php-src ruby/ruby golang/go openjdk/jdk JetBrains/kotlin nodejs/node rust-lang/rust elixir-lang/elixir django/django laravel/laravel spring-projects/spring-boot spring-projects/spring-framework gin-gonic/gin labstack/echo rails/rails nodejs/node
 blacklist = data/follow_log.csv
@@ -36,6 +38,8 @@ whitelist = jacquev6 sfdye
 `followers_count` : Choose the number of users to follow.
 
 `interval` : The bot interval in seconds.
+
+`active_since` : Filter accounts to be followed based on when they were last active. Represents number of `weeks` since last profile update.
 
 `verbosity` : Set loglevel verbosity, possible values are `NOTSET`, `DEBUG`, `INFO`, `WARNING`, `ERROR` and `CRITICAL`.
 

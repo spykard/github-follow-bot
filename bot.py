@@ -15,7 +15,7 @@ class Bot():
         """
         self._client = Github(access_token)
 
-    def get_random_users(self, count=1000, projects="python/cpython", min_followers=5, min_follow=5, blacklist={}):
+    def get_random_users(self, count=1000, projects="python/cpython", min_followers=5, min_follow=5, blacklist={}, active_since=8):
         """
         Get Random Users
 
@@ -32,7 +32,7 @@ class Bot():
         for project in projects:
             repo = self._client.get_repo(project)
             for username in repo.get_stargazers():
-                date = datetime.now() - timedelta(weeks=7)
+                date = datetime.now() - timedelta(weeks=active_since)
                 if username.login in blacklist:
                     continue
                 if username.updated_at < date:
