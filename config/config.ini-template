@@ -1,0 +1,21 @@
+[DEFAULT]
+access_token =
+operation = follow
+followers_count = 1000
+interval = 2
+active_since = 8
+verbosity = DEBUG
+projects = python/cpython php/php-src ruby/ruby golang/go openjdk/jdk JetBrains/kotlin nodejs/node rust-lang/rust elixir-lang/elixir django/django laravel/laravel spring-projects/spring-boot spring-projects/spring-framework gin-gonic/gin labstack/echo rails/rails nodejs/node
+blacklist =
+whitelist = 
+
+[Settings]
+access_token = example
+operation = follow
+followers_count = 700
+interval = 2
+active_since = 1
+verbosity = INFO
+projects = keras-team/keras josephmisiti/awesome-machine-learning
+blacklist = data/follow_log.csv
+whitelist = example
